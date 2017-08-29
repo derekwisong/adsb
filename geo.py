@@ -5,7 +5,7 @@ import logging
 
 log = logging.getLogger(__name__)
 
-def haversine_distance(lat1_deg, lon1_deg, lat2_deg, lon2_deg, conversion=3959):
+def haversine(lat1_deg, lon1_deg, lat2_deg, lon2_deg, conversion=3959):
     """
     Calculate haversine distance using great-circle approximation.
     lat1, lon2, lat2, lon2 are all expected to be given in degrees
