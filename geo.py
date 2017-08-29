@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
 import math
+import logging
+
+log = logging.getLogger(__name__)
 
 def haversine_distance(lat1_deg, lon1_deg, lat2_deg, lon2_deg, conversion=3959):
     """
@@ -22,8 +25,8 @@ def haversine_distance(lat1_deg, lon1_deg, lat2_deg, lon2_deg, conversion=3959):
     return haversine
 
 
-if __name__ == '__main__':
-    print "Test distance between New York, NY and Los Angeles, CA"
+def test():
+    log.info("Test distance between New York, NY and Los Angeles, CA")
 
     ny_lat = 40.7142700
     ny_lon = -74.0059700
@@ -33,4 +36,8 @@ if __name__ == '__main__':
 
     distance = haversine_distance(ny_lat, ny_lon, la_lat, la_lon)
 
-    print "Distance between New York, NY and Los Angeles, CA is {} miles".format(distance)
+    log.info("Distance between New York, NY and Los Angeles, CA is {} miles".format(distance))
+
+if __name__ == '__main__':
+    test()
+
