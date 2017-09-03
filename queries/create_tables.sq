@@ -1,0 +1,141 @@
+-- Create tables used for an ADSB database
+
+drop table aclist;
+
+create table aclist (
+   "date"        date,
+   "Id"          integer,
+   "TSecs"       integer,
+   "Rcvr"        integer,
+   "Icao"        varchar(30),
+   "Bad"         boolean,
+   "Reg"         varchar(30),
+   "Alt"         integer, 
+   "GAlt"        integer,
+   "InHg"        float,
+   "AltT"        boolean,
+   "TAlt"        integer,
+   "Call"        varchar(300),
+   "CallSus"     boolean,
+   "Lat"         float,
+   "Long"        float,
+   "PosTime"     bigint,
+   "Mlat"        boolean,
+   "PosStale"    boolean,
+   "Tisb"        boolean,
+   "Spd"         float,
+   "SpdTyp"      integer,
+   "Vsi"         integer,
+   "VsiT"        integer,
+   "Trak"        float,
+   "TrkH"        boolean,
+   "TTrk"        float,
+   "Type"        varchar(300),
+   "Mdl"         varchar(300),
+   "Man"         varchar(300),
+   "CNum"        varchar(80),
+   "From"        varchar(300),
+   "To"          varchar(300),
+   "Stops"       varchar(800),
+   "Op"          varchar(300),
+   "OpIcao"      varchar(30),
+   "OpCode"      varchar(100),
+   "Sqk"         integer,
+   "Help"        boolean,
+   "Dst"         float,
+   "Brng"        float,
+   "WTC"         integer,
+   "Engines"     varchar(20),
+   "EngType"     integer,
+   "EngMount"    integer,
+   "Species"     integer,
+   "Mil"         boolean,
+   "Cou"         varchar(100),
+   "HasPic"      boolean,
+   "PicX"        integer,
+   "PicY"        integer,
+   "FlightsCount" integer,
+   "CMsgs"       integer,
+   "Gnd"         boolean,
+   "Tag"         varchar(300),
+   "Interested"  boolean,
+   "TT"          varchar(3),
+   "Trt"         integer,
+   "Year"        integer,
+   "Sat"         boolean,
+   "ResetTrail"  boolean,
+   "HasSig"      boolean,
+   "Sig"         float,
+   "FSeen"       varchar(80),
+   "Source"      varchar(300),
+   "datafile"    varchar(300)
+ );
+
+ 
+comment on table aclist is 'The list of aircraft records from a virtual radar server.';
+
+comment on column aclist."date" is 'The date that the data is from';
+comment on column aclist."Id" is 'The unique identifier of the aircraft.';
+comment on column aclist."TSecs" is 'The number of seconds that the aircraft has been tracked for.';
+comment on column aclist."Rcvr" is 'The ID of the feed that last supplied information about the aircraft. Will be different to srcFeed if the source is a merged feed.';
+comment on column aclist."Icao" is 'The ICAO of the aircraft.';
+comment on column aclist."Bad" is 'True if the ICAO is known to be invalid. This information comes from the local BaseStationsqb database.';
+comment on column aclist."Reg" is 'The registration.';
+comment on column aclist."Alt" is 'The altitude in feet at standard pressure.';
+comment on column aclist."GAlt" is 'The altitude adjusted for local air pressure, should be roughly the height above mean sea level.';
+comment on column aclist."InHg" is 'The air pressure in inches of mercury that was used to calculate the AMSL altitude from the standard pressure altitude.';
+comment on column aclist."AltT" is 'The type of altitude transmitted by the aircraft: 0 = standard pressure altitude, 1 = indicated atitude (above mean sea level). Default to standard pressure altitude until told otherwise.';
+comment on column aclist."TAlt" is 'The target altitude, in feet, set on the autopilot / FMS etc.';
+comment on column aclist."Call" is 'The callsign.';
+comment on column aclist."CallSus" is 'True if the callsign may not be correct.';
+comment on column aclist."Lat" is 'The aircraft''s latitude over the ground.';
+comment on column aclist."Long" is 'The aircraft''s longitude over the ground.';
+comment on column aclist."PosTime" is 'The time (at UTC in JavaScript ticks) that the position was last reported by the aircraft.';
+comment on column aclist."Mlat" is 'True if the latitude and longitude appear to have been calculated by an MLAT server and were not transmitted by the aircraft.';
+comment on column aclist."PosStale" is 'True if the last position update is older than the display timeout value - usually only seen on MLAT aircraft in merged feeds.';
+comment on column aclist."Tisb" is 'True if the last message received for the aircraft was from a TIS-B source.';
+comment on column aclist."Spd" is 'The ground speed in knots.';
+comment on column aclist."SpdTyp" is 'The type of speed that Spd represents. Only used with raw feeds. 0/missing = ground speed, 1 = ground speed reversing, 2 = indicated air speed, 3 = true air speed.';
+comment on column aclist."Vsi" is 'Vertical speed in feet per minute.';
+comment on column aclist."VsiT" is '0 = vertical speed is barometric, 1 = vertical speed is geometric. Default to barometric until told otherwise.';
+comment on column aclist."Trak" is 'Aircraft''s track angle across the ground clockwise from 0° north.';
+comment on column aclist."TrkH" is 'True if Trak is the aircraft''s heading, false if it''s the ground track. Default to ground track until told otherwise.';
+comment on column aclist."TTrk" is 'The track or heading currently set on the aircraft''s autopilot or FMS.';
+comment on column aclist."Type" is 'The aircraft model''s ICAO type code.';
+comment on column aclist."Mdl" is 'A description of the aircraft''s model. Usually also includes the manufacturer''s name.';
+comment on column aclist."Man" is 'The manufacturer''s name.';
+comment on column aclist."CNum" is 'The aircraft''s construction or serial number.';
+comment on column aclist."From" is 'The code and name of the departure airport.';
+comment on column aclist."To" is 'The code and name of the arrival airport.';
+comment on column aclist."Stops" is 'An array of strings, each being a stopover on the route.';
+comment on column aclist."Op" is 'The name of the aircraft''s operator.';
+comment on column aclist."OpCode" is 'The operator''s ICAO code.';
+comment on column aclist."Sqk" is 'The squawk as a decimal number (e.g. a squawk of 7654 is passed as 7654, not 4012).';
+comment on column aclist."Help" is 'True if the aircraft is transmitting an emergency squawk.';
+comment on column aclist."Dst" is 'The distance to the aircraft in kilometres.';
+comment on column aclist."Brng" is 'The bearing from the browser to the aircraft clockwise from 0° north.';
+comment on column aclist."WTC" is 'The wake turbulence category of the aircraft - see enums.js for values.';
+comment on column aclist."Engines" is 'The number of engines the aircraft has. Usually ''1'', ''2'' etc. but can also be a string - see ICAO documentation.';
+comment on column aclist."EngType" is 'The type of engine the aircraft uses - see enums.js for values.';
+comment on column aclist."EngMount" is 'The placement of engines on the aircraft - see enums.js for values.';
+comment on column aclist."Species" is 'The species of the aircraft (helicopter, jet etc.) - see enums.js for values.';
+comment on column aclist."Mil" is 'True if the aircraft appears to be operated by the military.';
+comment on column aclist."Cou" is 'The country that the aircraft is registered to.';
+comment on column aclist."HasPic" is 'True if the aircraft has a picture associated with it.';
+comment on column aclist."PicX" is 'The width of the picture in pixels.';
+comment on column aclist."PicY" is 'The height of the picture in pixels.';
+comment on column aclist."FlightsCount" is 'The number of Flights records the aircraft has in the database.';
+comment on column aclist."CMsgs" is 'The count of messages received for the aircraft.';
+comment on column aclist."Gnd" is 'True if the aircraft is on the ground.';
+comment on column aclist."Tag" is 'The user tag found for the aircraft in the BaseStation.sqb local database.';
+comment on column aclist."Interested" is 'True if the aircraft is flagged as interesting in the BaseStation.sqb local database.';
+comment on column aclist."TT" is 'Trail type - empty for plain trails, ''a'' for trails that include altitude, ''s'' for trails that include speed.';
+comment on column aclist."Trt" is 'Transponder type - 0=Unknown, 1=Mode-S, 2=ADS-B (unknown version), 3=ADS-B 0, 4=ADS-B 1, 5=ADS-B 2.';
+comment on column aclist."Year" is 'The year that the aircraft was manufactured.';
+comment on column aclist."Sat" is 'True if the aircraft has been seen on a SatCom ACARS feed (e.g. a JAERO feed).';
+comment on column aclist."ResetTrail" is 'True if the entire trail has been sent and the JavaScript should discard any existing trail history it''s built up for the aircraft.';
+comment on column aclist."HasSig" is 'True if the aircraft has a signal level associated with it.';
+comment on column aclist."Sig" is 'The signal level for the last message received from the aircraft, as reported by the receiver. Not all receivers pass signal levels. The value''s units are receiver-dependent.';
+comment on column aclist."FSeen" is 'Epoch format date and time the receiver first started seeing the aircraft on this flight.  Accurate for a single receiver, but as the plane is detected by different receivers, this will change.';
+comment on column aclist."Source" is 'adsbexchange.com internal use only';
+comment on column aclist."datafile" is 'Data file that the data comes from';
