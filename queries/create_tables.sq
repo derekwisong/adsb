@@ -3,7 +3,7 @@
 drop table aclist;
 
 create table aclist (
-   "date"        date,
+   --"date"        date,
    "Id"          integer,
    "TSecs"       integer,
    "Rcvr"        integer,
@@ -19,7 +19,7 @@ create table aclist (
    "CallSus"     boolean,
    "Lat"         float,
    "Long"        float,
-   "PosTime"     bigint,
+   "PosTime"     date,
    "Mlat"        boolean,
    "PosStale"    boolean,
    "Tisb"        boolean,
@@ -66,7 +66,7 @@ create table aclist (
    "ResetTrail"  boolean,
    "HasSig"      boolean,
    "Sig"         float,
-   "FSeen"       varchar(80),
+   "FSeen"       date,
    "Source"      varchar(300),
    "datafile"    varchar(300)
  );
@@ -74,7 +74,7 @@ create table aclist (
  
 comment on table aclist is 'The list of aircraft records from a virtual radar server.';
 
-comment on column aclist."date" is 'The date that the data is from';
+--comment on column aclist."date" is 'The date that the data is from';
 comment on column aclist."Id" is 'The unique identifier of the aircraft.';
 comment on column aclist."TSecs" is 'The number of seconds that the aircraft has been tracked for.';
 comment on column aclist."Rcvr" is 'The ID of the feed that last supplied information about the aircraft. Will be different to srcFeed if the source is a merged feed.';

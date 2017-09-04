@@ -9,8 +9,6 @@ def extract_data(zipped_data, filename):
     return f
 
 def parse_data(zip_filepath, filename):
-    log.info("Looking for aircraft in {}".format(filename))
-
     with zipfile.ZipFile(zip_filepath) as zipped_data:
         data = json.loads(extract_data(zipped_data, filename))
         return data

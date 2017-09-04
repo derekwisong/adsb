@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-import adsbexchange
-
 import psycopg2
 import psycopg2.extras
 import argparse
@@ -10,6 +8,9 @@ import configparser
 import logging
 import multiprocessing
 import functools
+import datetime
+
+import adsbexchange
 
 
 log = logging.getLogger(__name__)
@@ -46,8 +47,20 @@ def cast_value(column_detail, value):
     if value is '':
         return None
 
+    column_type = type_map[column_detail.type_code]
+
     try:
-        return type_map[column_detail.type_code](value)
+        if column_detail.type_code == 1082:
+            if column_detail.name == "FSeen":
+                fseen = int(value[6:-2])
+                return datetime.datetime.utcfromtimestamp(fseen/1000.0)
+            elif column_detail.name == "PosTime":
+                return datetime.datetime.utcfromtimestamp(value/1000.0)
+        else:
+            if column_detail.name == "Stops":
+                return str(value)
+            else:
+                return type_map[column_detail.type_code](value)
     except:
         return None
 
@@ -64,7 +77,6 @@ def build_row_data(column_names, record):
             column_detail = column_names[column.lower()]
             db_column = column_detail[0]
             row_data[db_column] = cast_value(column_detail, value)
-            # need to add code to convert types
         except KeyError:
             columns_not_in_db.append(column)
 
@@ -72,7 +84,6 @@ def build_row_data(column_names, record):
 
     if num_missing > 0:
         missing_cols = ",".join(columns_not_in_db)
-        log.debug("{} columns not in database: {}".format(num_missing, missing_cols))
 
     return row_data
 
@@ -106,13 +117,13 @@ def insert_data_via_copy(cursor, column_names, data):
     import csv
 
     csv_buffer = io.StringIO()
-    writer = csv.writer(csv_buffer, delimiter='\t', quoting=csv.QUOTE_MINIMAL)
+    writer = csv.writer(csv_buffer, delimiter='\t', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
 
     for row in data:
         writer.writerow(row)
 
     string_buffer = io.StringIO(csv_buffer.getvalue())
-    cursor.copy_from(string_buffer, 'aclist', columns=['"{}"'.format(x) for x in column_names])
+    cursor.copy_from(string_buffer, 'aclist', null='', columns=['"{}"'.format(x) for x in column_names])
 
 
 def insert_data(cursor, column_names, data):
@@ -136,7 +147,7 @@ def load_historical_file(zip_file, column_name_map, config, data_file):
         data = adsbexchange.parse_data(zip_file, data_file)
         values = [build_row_data(column_name_map, x) for x in data['acList']]
         data = [tuple([row[c] for c in column_names]) for row in values]
-        insert_data_via_copy(cursor, column_names, data)
+        insert_data(cursor, column_names, data)
     except:
         log.exception("Unable to parse {}/{}".format(zip_file, data_file))
     finally:
@@ -147,7 +158,7 @@ def load_historical_file(zip_file, column_name_map, config, data_file):
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
 
     args = command_line_args("Database loader")
     config = load_config(args.config_file)
