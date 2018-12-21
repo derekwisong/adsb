@@ -1,0 +1,3 @@
+loader.conf
+*~
+__pycache__/
